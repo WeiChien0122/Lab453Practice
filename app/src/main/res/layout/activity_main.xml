@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.nclab.cycu.lab453practice.MainActivity">
@@ -127,52 +128,6 @@
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <Button
-        android:id="@+id/woodButton"
-        style="@style/Widget.AppCompat.Button.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="add"
-        app:layout_constraintEnd_toEndOf="@+id/woodTextView"
-        app:layout_constraintStart_toStartOf="@+id/woodTextView"
-        app:layout_constraintTop_toBottomOf="@+id/woodTextView" />
-
-    <Button
-        android:id="@+id/foodButton"
-        style="@style/Widget.AppCompat.Button.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="add"
-        app:layout_constraintEnd_toEndOf="@+id/foodTextView"
-        app:layout_constraintStart_toStartOf="@+id/foodTextView"
-        app:layout_constraintTop_toBottomOf="@+id/foodTextView" />
-
-    <Button
-        android:id="@+id/goldButton"
-        style="@style/Widget.AppCompat.Button.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="add"
-        app:layout_constraintEnd_toEndOf="@+id/goldTextView"
-        app:layout_constraintStart_toStartOf="@+id/goldTextView"
-        app:layout_constraintTop_toBottomOf="@+id/goldTextView" />
-
-    <Button
-        android:id="@+id/stoneButton"
-        style="@style/Widget.AppCompat.Button.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:text="add"
-        app:layout_constraintEnd_toEndOf="@+id/stoneTextView"
-        app:layout_constraintStart_toStartOf="@+id/stoneTextView"
-        app:layout_constraintTop_toBottomOf="@+id/stoneTextView" />
-
-    <Button
         android:id="@+id/popButton"
         style="@style/Widget.AppCompat.Button.Small"
         android:layout_width="wrap_content"
@@ -181,7 +136,6 @@
         android:text="add"
         app:layout_constraintEnd_toStartOf="@+id/maxPopButton"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/stoneButton"
         app:layout_constraintStart_toStartOf="@+id/popTextView"
         app:layout_constraintTop_toBottomOf="@+id/popTextView" />
 
@@ -196,4 +150,59 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/popButton"
         app:layout_constraintTop_toBottomOf="@+id/popTextView" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.4" />
+
+    <ImageView
+        android:id="@+id/forestImageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#309900"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline2"
+        app:layout_constraintWidth_percent="0.2" />
+
+    <ImageView
+        android:id="@+id/goldImageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#ffd500"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.2" />
+
+    <ImageView
+        android:id="@+id/stoneImageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#74726c"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintWidth_percent="0.2" />
+
+    <ImageView
+        android:id="@+id/farmlandImageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#c36902"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintTop_toTopOf="@+id/guideline2"
+        app:layout_constraintWidth_percent="0.2" />
+
 </android.support.constraint.ConstraintLayout>
