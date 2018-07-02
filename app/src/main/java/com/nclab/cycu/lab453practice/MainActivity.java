@@ -1,5 +1,6 @@
 package com.nclab.cycu.lab453practice;
 
+import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView mGoldImageView;
     private ImageView mStoneImageView;
     private HashMap<ImageView, Villager> mViewVillagerHashMap = new HashMap<>();
+    private Handler mHandler = new Handler();
 
     //依照Player這個class建構出一個物件，然後放到mPlayer變數中
     private Player mPlayer = new Player();
@@ -32,12 +34,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         initializeUI(); //初始化UI
-        updateView(); //更新頁面
+
+        //用Handler搭配Runnable實現循環執行
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (!isDestroyed()) {
+                    updateView();
+                    mHandler.postDelayed(this, 100);
+                }
+            }
+        };
+        mHandler.postDelayed(runnable, 100);
     }
 
-    /**
-     *
-     */
     private void initializeUI() {
         mWoodTextView = findViewById(R.id.woodTextView);
         mFoodTextView = findViewById(R.id.foodTextView);
@@ -69,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mPlayer.setMaxPopulation(mPlayer.getMaxPopulation() + 5); //為mPlayer增加5個人口上限
                 break;
         }
-        updateView();
     }
 
     private void newVillage() {
@@ -143,26 +152,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //判斷村民位置，設定工作
         if (x >= mForestImageView.getLeft() && x <= mForestImageView.getRight() && y >= mForestImageView.getTop() && y <= mForestImageView.getBottom()) {
             villager.setJob(Villager.JOB_LUMBERJACK);
-            mPlayer.setWood(mPlayer.getWood() + 1);
+//            mPlayer.setWood(mPlayer.getWood() + 1);
 
         } else if (x >= mFarmlandImageView.getLeft() && x <= mFarmlandImageView.getRight() && y >= mFarmlandImageView.getTop() && y <= mFarmlandImageView.getBottom()) {
             villager.setJob(Villager.JOB_FARMER);
-            mPlayer.setFood(mPlayer.getFood() + 1);
+//            mPlayer.setFood(mPlayer.getFood() + 1);
 
         } else if (x >= mGoldImageView.getLeft() && x <= mGoldImageView.getRight() && y >= mGoldImageView.getTop() && y <= mGoldImageView.getBottom()) {
             villager.setJob(Villager.JOB_GOLD_MINER);
-            mPlayer.setGold(mPlayer.getGold() + 1);
+//            mPlayer.setGold(mPlayer.getGold() + 1);
 
         } else if (x >= mStoneImageView.getLeft() && x <= mStoneImageView.getRight() && y >= mStoneImageView.getTop() && y <= mStoneImageView.getBottom()) {
             villager.setJob(Villager.JOB_STONE_MINER);
-            mPlayer.setStone(mPlayer.getStone() + 1);
+//            mPlayer.setStone(mPlayer.getStone() + 1);
 
         } else {
             villager.setJob(Villager.JOB_NONE);
 
         }
-        //更新頁面
-        updateView();
     }
 
     /**

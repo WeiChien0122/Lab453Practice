@@ -25,27 +25,27 @@ public class Player {
     }
 
     //setters
-    public void setWood(int wood) {
+    synchronized public void setWood(int wood) {
         this.wood = wood;
     }
 
-    public void setFood(int food) {
+    synchronized public void setFood(int food) {
         this.food = food;
     }
 
-    public void setGold(int gold) {
+    synchronized public void setGold(int gold) {
         this.gold = gold;
     }
 
-    public void setStone(int stone) {
+    synchronized public void setStone(int stone) {
         this.stone = stone;
     }
 
-    public void setPopulation(int population) {
+    synchronized public void setPopulation(int population) {
         this.population = population;
     }
 
-    public void setMaxPopulation(int maxPopulation) {
+    synchronized public void setMaxPopulation(int maxPopulation) {
         this.maxPopulation = maxPopulation;
     }
 
@@ -78,7 +78,7 @@ public class Player {
 
     public Villager newVillage() {
         //建立一個村民
-        Villager villager = new Villager();
+        Villager villager = new Villager(this);
         //放到容器裡
         mVillagerList.add(villager);
         //回傳這個村民，讓其他程式得到它的參考。
