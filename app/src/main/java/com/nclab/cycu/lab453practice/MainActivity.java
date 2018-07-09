@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.HashMap;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -22,7 +21,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView mFarmlandImageView;
     private ImageView mGoldImageView;
     private ImageView mStoneImageView;
-    private HashMap<ImageView, Villager> mViewVillagerHashMap = new HashMap<>();
     private Handler mHandler = new Handler();
 
     //依照Player這個class建構出一個物件，然後放到mPlayer變數中
@@ -54,8 +52,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mGoldTextView = findViewById(R.id.goldTextView);
         mStoneTextView = findViewById(R.id.stoneTextView);
         mPopTextView = findViewById(R.id.popTextView);
-        findViewById(R.id.popButton).setOnClickListener(this);
-        findViewById(R.id.maxPopButton).setOnClickListener(this);
+        findViewById(R.id.newVillagerButton).setOnClickListener(this);
+        findViewById(R.id.newMilitiaButton).setOnClickListener(this);
         mForestImageView = findViewById(R.id.forestImageView);
         mFarmlandImageView = findViewById(R.id.farmlandImageView);
         mGoldImageView = findViewById(R.id.goldImageView);
@@ -71,19 +69,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.popButton:
+            case R.id.newVillagerButton:
                 //新增一個村民
                 newVillage();
                 break;
-            case R.id.maxPopButton:
-                mPlayer.setMaxPopulation(mPlayer.getMaxPopulation() + 5); //為mPlayer增加5個人口上限
+            case R.id.newMilitiaButton:
+                //新增一個民兵
+                newMilitia();
                 break;
         }
     }
 
     private void newVillage() {
-        //叫mPlayer創建一個村民
-        Villager newVillage = mPlayer.newVillage();
 
         //創建ImageView，並覆寫onTouchEvent()，讓我們可以拖著照片移動
         ImageView villageImageView = new android.support.v7.widget.AppCompatImageView(this) {
@@ -134,42 +131,119 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
             }
         };
-        //設定元件圖片
-        villageImageView.setImageDrawable(getResources().getDrawable(R.drawable.village));
 
-        //用HashMapur將村民和ImageView對應
-        mViewVillagerHashMap.put(villageImageView, newVillage);
+        //設定元件圖片
+        villageImageView.setImageDrawable(getResources().getDrawable(Villager.DRAWABLE_RESOURCE));
 
         //取得Layout
         ConstraintLayout constraintLayout = findViewById(R.id.constraintLayout);
+
         //把ImageView放入Layout，長寬各為200pixels
         constraintLayout.addView(villageImageView, 200, 200);
+
+        //創建村民
+        mPlayer.newVillage(villageImageView);
+    }
+
+    private void newMilitia() {
+
+        //創建ImageView，並覆寫onTouchEvent()，讓我們可以拖著照片移動
+        ImageView militiaImageView = new android.support.v7.widget.AppCompatImageView(this) {
+            float thumbX0;
+            float thumbY0;
+            float viewX0;
+            float viewY0;
+            boolean hasMoved;
+
+            //Android要求，只要有覆寫onTouchEvent()，就必須覆寫performClick()
+            @Override
+            public boolean performClick() {
+                return super.performClick();
+            }
+
+            //覆寫onTouchEvent，處理觸碰事件，我們要拖著照片移動
+            @Override
+            public boolean onTouchEvent(MotionEvent event) {
+                switch (event.getActionMasked()) {
+                    case MotionEvent.ACTION_DOWN: //手指碰到螢幕
+                        //紀錄手指碰到螢幕的位置
+                        thumbX0 = event.getRawX();
+                        thumbY0 = event.getRawY();
+                        //紀錄元件的初始位置
+                        viewX0 = getX();
+                        viewY0 = getY();
+                        //紀錄在這次的觸碰事件中，從開始到結束，是否有移動過，如果沒有，會在手指離開螢幕的時候觸發點擊事件
+                        hasMoved = false;
+                        break;
+
+                    case MotionEvent.ACTION_MOVE: //手指在螢幕上移動
+                        //紀錄在這次的觸碰事件中，從開始到結束，是否有移動過，如果沒有，會在手指離開螢幕的時候觸發點擊事件
+                        hasMoved = true;
+                        //取得移動後的手指位置
+                        float x = event.getRawX();
+                        float y = event.getRawY();
+                        //更新元件的位置
+                        setX(viewX0 + (x - thumbX0));
+                        setY(viewY0 + (y - thumbY0));
+                        break;
+                    case MotionEvent.ACTION_UP: //手指離開螢幕
+                        //如果手指不曾移動，觸發點擊事件
+                        if (!hasMoved) performClick();
+                        return false;
+                }
+                return true;
+            }
+        };
+
+        //設定元件圖片
+        militiaImageView.setImageDrawable(getResources().getDrawable(Militia.DRAWABLE_RESOURCE));
+
+        //取得Layout
+        ConstraintLayout constraintLayout = findViewById(R.id.constraintLayout);
+
+        //把ImageView放入Layout，長寬各為200pixels
+        constraintLayout.addView(militiaImageView, 200, 200);
+
+        //創建民兵
+        mPlayer.newMilitia(militiaImageView);
     }
 
     private void onVillageMoved(ImageView view, float x, float y) {
-        //從HashMap取得ImageView對應的村民
-        Villager villager = mViewVillagerHashMap.get(view);
+        //取得擁有此ImageView的村民
+        Villager villager = mPlayer.findVillagerByView(view);
+
         //判斷村民位置，設定工作
-        if (x >= mForestImageView.getLeft() && x <= mForestImageView.getRight() && y >= mForestImageView.getTop() && y <= mForestImageView.getBottom()) {
+        if (isOverlapping(view, mForestImageView)) {
             villager.setJob(Villager.JOB_LUMBERJACK);
-//            mPlayer.setWood(mPlayer.getWood() + 1);
 
-        } else if (x >= mFarmlandImageView.getLeft() && x <= mFarmlandImageView.getRight() && y >= mFarmlandImageView.getTop() && y <= mFarmlandImageView.getBottom()) {
+        } else if (isOverlapping(view, mFarmlandImageView)) {
             villager.setJob(Villager.JOB_FARMER);
-//            mPlayer.setFood(mPlayer.getFood() + 1);
 
-        } else if (x >= mGoldImageView.getLeft() && x <= mGoldImageView.getRight() && y >= mGoldImageView.getTop() && y <= mGoldImageView.getBottom()) {
+        } else if (isOverlapping(view, mGoldImageView)) {
             villager.setJob(Villager.JOB_GOLD_MINER);
-//            mPlayer.setGold(mPlayer.getGold() + 1);
 
-        } else if (x >= mStoneImageView.getLeft() && x <= mStoneImageView.getRight() && y >= mStoneImageView.getTop() && y <= mStoneImageView.getBottom()) {
+        } else if (isOverlapping(view, mStoneImageView)) {
             villager.setJob(Villager.JOB_STONE_MINER);
-//            mPlayer.setStone(mPlayer.getStone() + 1);
 
         } else {
             villager.setJob(Villager.JOB_NONE);
 
         }
+    }
+
+    /**
+     * 判斷兩個元件是否重疊
+     */
+    public static boolean isOverlapping(View view1, View view2) {
+        float view1Left = view1.getX();
+        float view1Top = view1.getY();
+        float view1Right = view1Left+view1.getWidth();
+        float view1Bottom = view1Top + view1.getHeight();
+        float view2Left = view2.getX();
+        float view2Top = view2.getY();
+        float view2Right = view2Left+view2.getWidth();
+        float view2Bottom = view2Top + view2.getHeight();
+        return !(view1Left > view2Right) && !(view1Top > view2Bottom) && !(view1Right < view2Left) && !(view1Bottom < view2Top);
     }
 
     /**
@@ -183,5 +257,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mStoneTextView.setText(String.valueOf(mPlayer.getStone()));
         //String.format也是轉換字串的一種方法，用法有點像C語言中<stdio.h>的printf()
         mPopTextView.setText(String.format(Locale.getDefault(), "%d/%d", mPlayer.getPopulation(), mPlayer.getMaxPopulation()));
+
+        Villager deadVillager = mPlayer.findDeadVillager();
+        if (deadVillager != null) {
+            deadVillager.getImageView().setVisibility(View.GONE);
+            mPlayer.removeVillager(deadVillager);
+        }
+
+        Militia deadMilitia = mPlayer.findDeadMilitia();
+        if (deadMilitia != null) {
+            deadMilitia.getImageView().setVisibility(View.GONE);
+            mPlayer.removeMilitia(deadMilitia);
+        }
+
     }
 }

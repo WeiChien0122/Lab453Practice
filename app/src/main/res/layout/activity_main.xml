@@ -128,19 +128,19 @@
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <Button
-        android:id="@+id/popButton"
+        android:id="@+id/newVillagerButton"
         style="@style/Widget.AppCompat.Button.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="add"
-        app:layout_constraintEnd_toStartOf="@+id/maxPopButton"
+        app:layout_constraintEnd_toStartOf="@+id/newMilitiaButton"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/popTextView"
         app:layout_constraintTop_toBottomOf="@+id/popTextView" />
 
     <Button
-        android:id="@+id/maxPopButton"
+        android:id="@+id/newMilitiaButton"
         style="@style/Widget.AppCompat.Button.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -148,7 +148,7 @@
         android:text="add"
         app:layout_constraintEnd_toEndOf="@+id/popTextView"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/popButton"
+        app:layout_constraintStart_toEndOf="@+id/newVillagerButton"
         app:layout_constraintTop_toBottomOf="@+id/popTextView" />
 
     <android.support.constraint.Guideline

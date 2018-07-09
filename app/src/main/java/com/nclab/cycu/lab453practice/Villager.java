@@ -1,14 +1,20 @@
 package com.nclab.cycu.lab453practice;
 
+import android.widget.ImageView;
+
 public class Villager {
+    public static final int DRAWABLE_RESOURCE = R.drawable.villager;
+
     public static final String JOB_NONE = "閒置村民";
     public static final String JOB_LUMBERJACK = "伐木工";
     public static final String JOB_FARMER = "農夫";
     public static final String JOB_GOLD_MINER = "金礦工";
     public static final String JOB_STONE_MINER = "石礦工";
     private Player mPlayer;
+    private ImageView mImageView;
     private VillagerThread mVillagerThread;
     private boolean mIsAlive;
+    private int mHp;
     private int mMaxHp;
     private int mAttack;
     private int mAttackRange;
@@ -18,10 +24,13 @@ public class Villager {
 
     /**
      * @param player 擁有這個村民的Player
+     * @param villageImageView 顯示在畫面上的ImageView
      */
-    public Villager(Player player) {
+    public Villager(Player player, ImageView villageImageView) {
         mPlayer = player; //把擁有這個村民的player記錄起來，供以後使用
+        mImageView = villageImageView;
         mIsAlive = true;
+        mHp = 25;
         mMaxHp = 25;
         mAttack = 3;
         mAttackRange = 0;
@@ -32,6 +41,14 @@ public class Villager {
         //創建屬於村民的執行序，並讓它開始。
         mVillagerThread = new VillagerThread();
         mVillagerThread.start();
+    }
+
+    public ImageView getImageView() {
+        return mImageView;
+    }
+
+    public boolean isAlive() {
+        return mIsAlive;
     }
 
     /**
@@ -45,6 +62,21 @@ public class Villager {
 
     public String getJob() {
         return mJob;
+    }
+
+    synchronized public void setHp(int hp) {
+        mHp = hp;
+        if (hp <= 0) {
+            mIsAlive = false;
+        }
+    }
+
+    public int getHp() {
+        return mHp;
+    }
+
+    public int getNearDefence() {
+        return mNearDefence;
     }
 
     /**
