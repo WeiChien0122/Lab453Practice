@@ -16,7 +16,6 @@ public class Militia {
     private int mAttackRange;
     private int mNearDefence;
     private int mFarDefence;
-    private String mJob;
 
     /**
      * @param player           擁有這個村民的Player
