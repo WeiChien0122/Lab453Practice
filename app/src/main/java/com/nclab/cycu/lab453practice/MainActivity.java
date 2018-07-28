@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void onVillageMoved(ImageView view, float x, float y) {
         //取得擁有此ImageView的村民
-        Villager villager = mPlayer.findVillagerByView(view);
+        Villager villager = (Villager) mPlayer.findMemberByView(view);
 
         //判斷村民位置，設定工作
         if (isOverlapping(view, mForestImageView)) {
@@ -258,16 +258,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //String.format也是轉換字串的一種方法，用法有點像C語言中<stdio.h>的printf()
         mPopTextView.setText(String.format(Locale.getDefault(), "%d/%d", mPlayer.getPopulation(), mPlayer.getMaxPopulation()));
 
-        Villager deadVillager = mPlayer.findDeadVillager();
-        if (deadVillager != null) {
-            deadVillager.getImageView().setVisibility(View.GONE);
-            mPlayer.removeVillager(deadVillager);
-        }
-
-        Militia deadMilitia = mPlayer.findDeadMilitia();
-        if (deadMilitia != null) {
-            deadMilitia.getImageView().setVisibility(View.GONE);
-            mPlayer.removeMilitia(deadMilitia);
+        Member deadMember = mPlayer.findDeadMember();
+        if (deadMember != null) {
+            deadMember.getImageView().setVisibility(View.GONE);
+            mPlayer.removeMember(deadMember);
         }
 
     }
