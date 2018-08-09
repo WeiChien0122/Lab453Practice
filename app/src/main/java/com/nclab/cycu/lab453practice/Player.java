@@ -3,6 +3,8 @@ package com.nclab.cycu.lab453practice;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
+import com.nclab.cycu.lab453practice.members.Member;
+
 import java.util.ArrayList;
 
 public class Player {
@@ -78,18 +80,12 @@ public class Player {
         return mMaxPopulation;
     }
 
-    public void newVillage(@NonNull ImageView villageImageView) {
-        //建立一個村民
-        Villager villager = new Villager(this, villageImageView);
-        //放到「成員」容器裡
-        mMemberList.add(villager);
-    }
-
-    public void newMilitia(@NonNull ImageView militiaImageView) {
-        //建立一個民兵
-        Militia militia = new Militia(this, militiaImageView);
-        //放到「成員」容器裡
-        mMemberList.add(militia);
+    /**
+     * 加入Member到List中
+     * @param member Member(Villager、Militia、ManAtArms...)
+     */
+    public void addMember(@NonNull Member member) {
+        mMemberList.add(member);
     }
 
     /**

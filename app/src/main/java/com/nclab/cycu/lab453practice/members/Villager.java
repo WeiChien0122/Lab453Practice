@@ -1,8 +1,10 @@
-package com.nclab.cycu.lab453practice;
+package com.nclab.cycu.lab453practice.members;
 
-import android.widget.ImageView;
+import com.nclab.cycu.lab453practice.MemberView;
+import com.nclab.cycu.lab453practice.Player;
+import com.nclab.cycu.lab453practice.R;
 
-public class Villager extends Member{
+public class Villager extends Member {
     public static final int DRAWABLE_RESOURCE = R.drawable.villager;
 
     public static final String JOB_NONE = "閒置村民";
@@ -16,8 +18,8 @@ public class Villager extends Member{
      * @param player 擁有這個村民的Player
      * @param villageImageView 顯示在畫面上的ImageView
      */
-    public Villager(Player player, ImageView villageImageView) {
-        super(player, villageImageView, 25, 25, 3, 0, 0,0);
+    public Villager(Player player, MemberView villageImageView) {
+        super(player, villageImageView, 25, 25, 3, 0, 0, 0);
         mJob = JOB_NONE;
     }
 

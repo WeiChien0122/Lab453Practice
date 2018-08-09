@@ -4,10 +4,13 @@ import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.nclab.cycu.lab453practice.members.Member;
+import com.nclab.cycu.lab453practice.members.MemberFactory;
+import com.nclab.cycu.lab453practice.members.Villager;
 
 import java.util.Locale;
 
@@ -54,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPopTextView = findViewById(R.id.popTextView);
         findViewById(R.id.newVillagerButton).setOnClickListener(this);
         findViewById(R.id.newMilitiaButton).setOnClickListener(this);
+        findViewById(R.id.newManAtArmsButton).setOnClickListener(this);
         mForestImageView = findViewById(R.id.forestImageView);
         mFarmlandImageView = findViewById(R.id.farmlandImageView);
         mGoldImageView = findViewById(R.id.goldImageView);
@@ -71,144 +75,57 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.newVillagerButton:
                 //新增一個村民
-                newVillage();
+                MemberView villagerView = newMemberView(R.drawable.villager);
+                villagerView.setOnMoveListener(new MemberView.OnMoveListener() {
+                    @Override
+                    public void onMove(MemberView memberView) {
+                        onVillageMoved(memberView);
+                    }
+                });
+
+                Member villager = MemberFactory.newInstance(MemberFactory.Type.VILLAGER, mPlayer, villagerView);
+                mPlayer.addMember(villager);
                 break;
+
             case R.id.newMilitiaButton:
                 //新增一個民兵
-                newMilitia();
+                MemberView militiaView = newMemberView(R.drawable.militia);
+
+                Member militia = MemberFactory.newInstance(MemberFactory.Type.MILITIA, mPlayer, militiaView);
+                mPlayer.addMember(militia);
+                break;
+
+            case R.id.newManAtArmsButton:
+                MemberView manAtArmsView = newMemberView(R.drawable.man_at_arms);
+
+                Member manAtArms = MemberFactory.newInstance(MemberFactory.Type.MAN_AT_ARMS, mPlayer, manAtArmsView);
+                mPlayer.addMember(manAtArms);
                 break;
         }
     }
 
-    private void newVillage() {
-
+    /**
+     * 創建MemberView，並將MemberView放入Layout中
+     * @param drawable 圖片資源
+     * @return MemberView
+     */
+    private MemberView newMemberView(int drawable) {
         //創建ImageView，並覆寫onTouchEvent()，讓我們可以拖著照片移動
-        ImageView villageImageView = new android.support.v7.widget.AppCompatImageView(this) {
-            float thumbX0;
-            float thumbY0;
-            float viewX0;
-            float viewY0;
-            boolean hasMoved;
-
-            //Android要求，只要有覆寫onTouchEvent()，就必須覆寫performClick()
-            @Override
-            public boolean performClick() {
-                return super.performClick();
-            }
-
-            //覆寫onTouchEvent，處理觸碰事件，我們要拖著照片移動
-            @Override
-            public boolean onTouchEvent(MotionEvent event) {
-                switch (event.getActionMasked()) {
-                    case MotionEvent.ACTION_DOWN: //手指碰到螢幕
-                        //紀錄手指碰到螢幕的位置
-                        thumbX0 = event.getRawX();
-                        thumbY0 = event.getRawY();
-                        //紀錄元件的初始位置
-                        viewX0 = getX();
-                        viewY0 = getY();
-                        //紀錄在這次的觸碰事件中，從開始到結束，是否有移動過，如果沒有，會在手指離開螢幕的時候觸發點擊事件
-                        hasMoved = false;
-                        break;
-
-                    case MotionEvent.ACTION_MOVE: //手指在螢幕上移動
-                        //紀錄在這次的觸碰事件中，從開始到結束，是否有移動過，如果沒有，會在手指離開螢幕的時候觸發點擊事件
-                        hasMoved = true;
-                        //取得移動後的手指位置
-                        float x = event.getRawX();
-                        float y = event.getRawY();
-                        //更新元件的位置
-                        setX(viewX0 + (x - thumbX0));
-                        setY(viewY0 + (y - thumbY0));
-                        //寫在MainActivity的方法，處理當村民移動時要做的事情
-                        onVillageMoved(this, getX(), getY());
-                        break;
-                    case MotionEvent.ACTION_UP: //手指離開螢幕
-                        //如果手指不曾移動，觸發點擊事件
-                        if (!hasMoved) performClick();
-                        return false;
-                }
-                return true;
-            }
-        };
+        MemberView memberView = new MemberView(this);
 
         //設定元件圖片
-        villageImageView.setImageDrawable(getResources().getDrawable(Villager.DRAWABLE_RESOURCE));
+        memberView.setImageDrawable(getResources().getDrawable(drawable));
 
         //取得Layout
         ConstraintLayout constraintLayout = findViewById(R.id.constraintLayout);
 
         //把ImageView放入Layout，長寬各為200pixels
-        constraintLayout.addView(villageImageView, 200, 200);
+        constraintLayout.addView(memberView, 200, 200);
 
-        //創建村民
-        mPlayer.newVillage(villageImageView);
-    }
+        return memberView;
+    };
 
-    private void newMilitia() {
-
-        //創建ImageView，並覆寫onTouchEvent()，讓我們可以拖著照片移動
-        ImageView militiaImageView = new android.support.v7.widget.AppCompatImageView(this) {
-            float thumbX0;
-            float thumbY0;
-            float viewX0;
-            float viewY0;
-            boolean hasMoved;
-
-            //Android要求，只要有覆寫onTouchEvent()，就必須覆寫performClick()
-            @Override
-            public boolean performClick() {
-                return super.performClick();
-            }
-
-            //覆寫onTouchEvent，處理觸碰事件，我們要拖著照片移動
-            @Override
-            public boolean onTouchEvent(MotionEvent event) {
-                switch (event.getActionMasked()) {
-                    case MotionEvent.ACTION_DOWN: //手指碰到螢幕
-                        //紀錄手指碰到螢幕的位置
-                        thumbX0 = event.getRawX();
-                        thumbY0 = event.getRawY();
-                        //紀錄元件的初始位置
-                        viewX0 = getX();
-                        viewY0 = getY();
-                        //紀錄在這次的觸碰事件中，從開始到結束，是否有移動過，如果沒有，會在手指離開螢幕的時候觸發點擊事件
-                        hasMoved = false;
-                        break;
-
-                    case MotionEvent.ACTION_MOVE: //手指在螢幕上移動
-                        //紀錄在這次的觸碰事件中，從開始到結束，是否有移動過，如果沒有，會在手指離開螢幕的時候觸發點擊事件
-                        hasMoved = true;
-                        //取得移動後的手指位置
-                        float x = event.getRawX();
-                        float y = event.getRawY();
-                        //更新元件的位置
-                        setX(viewX0 + (x - thumbX0));
-                        setY(viewY0 + (y - thumbY0));
-                        break;
-                    case MotionEvent.ACTION_UP: //手指離開螢幕
-                        //如果手指不曾移動，觸發點擊事件
-                        if (!hasMoved) performClick();
-                        return false;
-                }
-                return true;
-            }
-        };
-
-        //設定元件圖片
-        militiaImageView.setImageDrawable(getResources().getDrawable(Militia.DRAWABLE_RESOURCE));
-
-        //取得Layout
-        ConstraintLayout constraintLayout = findViewById(R.id.constraintLayout);
-
-        //把ImageView放入Layout，長寬各為200pixels
-        constraintLayout.addView(militiaImageView, 200, 200);
-
-        //創建民兵
-        mPlayer.newMilitia(militiaImageView);
-    }
-
-    private void onVillageMoved(ImageView view, float x, float y) {
+    private void onVillageMoved(ImageView view) {
         //取得擁有此ImageView的村民
         Villager villager = (Villager) mPlayer.findMemberByView(view);
 
@@ -237,11 +154,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static boolean isOverlapping(View view1, View view2) {
         float view1Left = view1.getX();
         float view1Top = view1.getY();
-        float view1Right = view1Left+view1.getWidth();
+        float view1Right = view1Left + view1.getWidth();
         float view1Bottom = view1Top + view1.getHeight();
         float view2Left = view2.getX();
         float view2Top = view2.getY();
-        float view2Right = view2Left+view2.getWidth();
+        float view2Right = view2Left + view2.getWidth();
         float view2Bottom = view2Top + view2.getHeight();
         return !(view1Left > view2Right) && !(view1Top > view2Bottom) && !(view1Right < view2Left) && !(view1Bottom < view2Top);
     }
@@ -263,6 +180,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             deadMember.getImageView().setVisibility(View.GONE);
             mPlayer.removeMember(deadMember);
         }
-
     }
+
 }

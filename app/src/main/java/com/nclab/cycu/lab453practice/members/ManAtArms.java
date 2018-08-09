@@ -1,20 +1,25 @@
-package com.nclab.cycu.lab453practice;
+package com.nclab.cycu.lab453practice.members;
 
-import android.widget.ImageView;
 
-public class Militia extends Member{
-    public static final int DRAWABLE_RESOURCE = R.drawable.militia;
+import com.nclab.cycu.lab453practice.MemberView;
+import com.nclab.cycu.lab453practice.Player;
+
+/**
+ * 裝甲步兵
+ */
+public class ManAtArms extends Member {
 
     /**
-     * @param player           擁有這個村民的Player
-     * @param militiaImageView 顯示在畫面上的ImageView
+     * @param player    擁有這個裝甲步兵的Player
+     * @param imageView 這個裝甲步兵的視圖
      */
-    public Militia(Player player, ImageView militiaImageView) {
-        super(player, militiaImageView, 40, 40, 4, 0, 0,1);
+    public ManAtArms(Player player, MemberView imageView) {
+        super(player, imageView, 45, 45, 6, 0, 0, 1);
     }
 
     /**
-     * 攻擊Member，Villager和Militia都繼承Member，可以一起使用這個method
+     * 攻擊Member
+     *
      * @param targetMember 攻擊目標
      */
     private void attack(Member targetMember) {
@@ -34,4 +39,5 @@ public class Militia extends Member{
             attack(member);
         }
     }
+
 }

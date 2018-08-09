@@ -132,11 +132,10 @@
         style="@style/Widget.AppCompat.Button.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="add"
-        app:layout_constraintEnd_toStartOf="@+id/newMilitiaButton"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/popTextView"
+        android:text="村民"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/popTextView" />
 
     <Button
@@ -144,12 +143,10 @@
         style="@style/Widget.AppCompat.Button.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="add"
-        app:layout_constraintEnd_toEndOf="@+id/popTextView"
-        app:layout_constraintHorizontal_bias="0.5"
+        android:layout_marginStart="8dp"
+        android:text="民兵"
         app:layout_constraintStart_toEndOf="@+id/newVillagerButton"
-        app:layout_constraintTop_toBottomOf="@+id/popTextView" />
+        app:layout_constraintTop_toTopOf="@+id/newVillagerButton" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -204,5 +201,14 @@
         app:layout_constraintHeight_percent="0.2"
         app:layout_constraintTop_toTopOf="@+id/guideline2"
         app:layout_constraintWidth_percent="0.2" />
+
+    <Button
+        android:id="@+id/newManAtArmsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="裝甲步兵"
+        app:layout_constraintStart_toEndOf="@+id/newMilitiaButton"
+        app:layout_constraintTop_toTopOf="@+id/newMilitiaButton" />
 
 </android.support.constraint.ConstraintLayout>
